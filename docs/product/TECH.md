@@ -13,6 +13,7 @@
 
 - Una aplicación Next.js monolítica: interfaz, lógica de dominio y acceso a datos en el mismo repositorio.
 - La lógica de dominio (antelación, precios, cancelación, lista de espera) vive en `src/domain/` como funciones puras sin dependencias de Next.js, para probarla con tests unitarios.
+- Las fechas y horas del dominio (antelación, franjas, disponibilidad) se calculan en hora del club (`Europe/Madrid`), no en la del servidor: `src/domain/club-time.ts` da la fecha de calendario y los minutos del día a partir de un instante, con `Intl.DateTimeFormat` (sin librerías de fechas), y tiene en cuenta el cambio de hora.
 - El acceso a datos pasa por Prisma (`src/lib/db.ts`, un único cliente compartido).
 - Sin servicios aparte mientras no haga falta: correo y pagos se integran como módulos en `src/lib/` cuando lleguen sus épicas.
 
@@ -30,7 +31,7 @@ Ninguna en el ticket 0. Pagos y correo quedan como decisiones pendientes de sus 
 
 - **Tests unitarios y de integración con Vitest:** `npm test`. Los de integración usan una base de Postgres de prueba (`DATABASE_URL` de `.env.test`) a la que se aplican las migraciones antes de correr.
 - **Lint y tipos:** `npm run lint` y `npm run typecheck`.
-- **E2E (más adelante):** Playwright para los criterios `[e2e]`, cuando llegue la primera pantalla de reservas; no entra en el ticket 0.
+- **E2E con Playwright:** `npm run test:e2e`, en un proyecto móvil de 375 px de ancho (Chromium). Levanta la app con `next build && next start` en el puerto 3100, contra la base `turnos_test`; cada archivo de `e2e/` siembra y limpia sus propios datos.
 - Datos de prueba: un seed (`npm run db:seed`) con las 6 pistas y algunos socios ficticios.
 
 ## Entornos y despliegue
