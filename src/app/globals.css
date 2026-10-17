@@ -23,4 +23,7 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  /* Letra grande y legible en el móvil sin hacer zoom (docs/product/BRIEF.md,
+     requisitos no funcionales): 18px de base en vez de los 16px por defecto. */
+  font-size: 1.125rem;
 }

@@ -61,7 +61,7 @@ El club tiene 6 pistas de pádel y las reservas las lleva el encargado por Whats
 
 ## Preguntas abiertas
 
-- [ ] ¿Cuáles son las franjas exactas (hora de apertura, de cierre y de inicio de cada franja)?
+- [x] ¿Cuáles son las franjas exactas (hora de apertura, de cierre y de inicio de cada franja)? Decidido: 9 franjas de 1 h 30 de 9:00 a 22:30, todos los días.
 - [ ] Ausencias: ¿cuántas antes de limitar, durante cuánto tiempo y quién las marca (solo Javi)?
 - [ ] «Ayuda de Javi»: ¿puede Javi reservar en nombre de un jugador? Si todo se paga al reservar, ¿quién paga en ese caso?
 - [ ] Lista de espera: ¿hasta cuándo se avisa (por ejemplo, no si faltan menos de 2 horas)?

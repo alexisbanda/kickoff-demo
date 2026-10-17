@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 px-6 py-16 text-center dark:bg-black">
@@ -11,6 +13,12 @@ export default function Home() {
         <p className="max-w-xl text-2xl leading-relaxed text-zinc-700 sm:text-3xl dark:text-zinc-300">
           Reserva tu pista de pádel desde el móvil, sin WhatsApp ni libreta.
         </p>
+        <Link
+          href="/disponibilidad"
+          className="w-full max-w-sm rounded-xl bg-blue-700 px-8 py-5 text-2xl font-bold text-white shadow-md sm:text-3xl"
+        >
+          Ver pistas libres
+        </Link>
         <p className="text-xl text-zinc-500 dark:text-zinc-400">
           Próximamente podrás reservar tu pista aquí.
         </p>

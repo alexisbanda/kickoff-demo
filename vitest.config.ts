@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import dotenv from "dotenv";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -21,5 +21,7 @@ export default defineConfig({
   test: {
     globalSetup: "./vitest.global-setup.ts",
     env: testEnv,
+    // Los e2e de Playwright (npm run test:e2e) viven en su propio runner.
+    exclude: [...configDefaults.exclude, "e2e/**"],
   },
 });

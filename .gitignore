@@ -22,6 +22,11 @@ next-env.d.ts
 .env.local
 .env.*.local
 
+# Playwright (e2e)
+/test-results/
+/playwright-report/
+/blob-report/
+
 # varios
 .DS_Store
 *.pem

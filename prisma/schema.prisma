@@ -1,7 +1,8 @@
-// Prisma schema del ticket 0 (cimientos).
-// El dominio completo (Reserva, Jugador, Socio, Bloqueo, ...) se añade épica a
-// épica; aquí solo dejamos Prisma configurado con un modelo mínimo.
-// Ver docs/product/TECH.md.
+// Prisma schema de Turnos. El dominio se añade épica a épica (ver
+// docs/product/TECH.md). El ticket 5 (ver pistas libres de un día) añade
+// Booking y Block como datos: todavía no hay pantalla para crearlos (eso
+// llega con "Reservar una pista" y el panel del encargado), solo el modelo,
+// el seed y los tests de disponibilidad.
 
 generator client {
   provider = "prisma-client"
@@ -16,4 +17,43 @@ model Court {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
+
+  bookings Booking[]
+  blocks   Block[]
+}
+
+enum BookingStatus {
+  ACTIVE
+  CANCELLED
+}
+
+// Una reserva de una pista en una franja de un día. La restricción que evita
+// reservas dobles (pista + día + franja, solo entre las activas) es un
+// índice único parcial que Prisma no puede expresar en el schema: se añade
+// a mano en el SQL de la migración (ver esa carpeta).
+model Booking {
+  id        String        @id @default(cuid())
+  courtId   String
+  court     Court         @relation(fields: [courtId], references: [id])
+  date      DateTime      @db.Date
+  slot      String
+  status    BookingStatus @default(ACTIVE)
+  createdAt DateTime      @default(now())
+
+  @@index([courtId, date])
+}
+
+// Un bloqueo de una pista en una franja de un día (mantenimiento, torneo...).
+// En este ticket solo existe como dato (modelo, seed y tests); crearlo desde
+// una pantalla queda para el panel del encargado.
+model Block {
+  id        String   @id @default(cuid())
+  courtId   String
+  court     Court    @relation(fields: [courtId], references: [id])
+  date      DateTime @db.Date
+  slot      String
+  reason    String?
+  createdAt DateTime @default(now())
+
+  @@index([courtId, date])
 }
