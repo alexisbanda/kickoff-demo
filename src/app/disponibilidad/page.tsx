@@ -114,7 +114,10 @@ async function Disponibilidad({
 
 function DaySelector({ days, selectedDate }: { days: string[]; selectedDate: string }) {
   return (
-    <nav aria-label="Elegir día" className="-mx-1 flex gap-2 overflow-x-auto pb-1">
+    // Rejilla de 4 columnas x 2 filas (hoy + 7 días = 8) en vez de una fila
+    // con scroll horizontal: a 375px de ancho, los 8 días tienen que verse
+    // sin desplazamiento (ver criterio de aceptación de 375px).
+    <nav aria-label="Elegir día" data-testid="day-selector" className="grid grid-cols-4 gap-2">
       {days.map((day) => {
         const isSelected = day === selectedDate;
         return (
@@ -123,14 +126,16 @@ function DaySelector({ days, selectedDate }: { days: string[]; selectedDate: str
             href={`/disponibilidad?dia=${day}`}
             aria-current={isSelected ? "date" : undefined}
             data-testid={`day-${day}`}
-            className={`flex min-w-[4.5rem] flex-shrink-0 flex-col items-center rounded-lg border-2 px-2 py-2 text-center ${
+            className={`flex flex-col items-center justify-center gap-0.5 rounded-lg border-2 px-1 py-2 text-center ${
               isSelected
                 ? "border-blue-700 bg-blue-700 text-white"
                 : "border-zinc-300 bg-white text-zinc-900 dark:border-zinc-600 dark:bg-zinc-900 dark:text-zinc-50"
             }`}
           >
-            <span className="text-base font-semibold capitalize">{formatClubWeekday(day, "short")}</span>
-            <span className="text-base">{formatClubDayMonth(day, "short")}</span>
+            <span className="text-lg leading-tight font-semibold capitalize">
+              {formatClubWeekday(day, "short")}
+            </span>
+            <span className="text-lg leading-tight">{formatClubDayMonth(day, "short")}</span>
           </Link>
         );
       })}

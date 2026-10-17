@@ -95,7 +95,7 @@ test.describe("Ver las pistas libres de un día", () => {
     await expect(page.getByTestId("booking-window-notice")).toHaveCount(0);
   });
 
-  test("a 375px de ancho, la lista de franjas se lee sin scroll horizontal y con letra de al menos 18px", async ({
+  test("a 375px de ancho, la pantalla (franjas y selector de días) se lee sin scroll horizontal y con letra de al menos 18px", async ({
     page,
   }) => {
     await page.goto(`/disponibilidad?dia=${PLUS_1}`);
@@ -104,7 +104,24 @@ test.describe("Ver las pistas libres de un día", () => {
     expect(scrollWidth).toBeLessThanOrEqual(375);
 
     const slot = page.getByTestId("slot-10:30");
-    const fontSizePx = await slot.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
-    expect(fontSizePx).toBeGreaterThanOrEqual(18);
+    const slotFontSizePx = await slot.evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(slotFontSizePx).toBeGreaterThanOrEqual(18);
+
+    // El selector de días (8 días, hoy + 7) tampoco debe desplazarse en
+    // horizontal dentro de su propio contenedor, y su texto debe medir al
+    // menos 18px.
+    const daySelector = page.getByTestId("day-selector");
+    const { navScrollWidth, navClientWidth } = await daySelector.evaluate((el) => ({
+      navScrollWidth: el.scrollWidth,
+      navClientWidth: el.clientWidth,
+    }));
+    expect(navScrollWidth).toBeLessThanOrEqual(navClientWidth);
+
+    const dayLink = page.getByTestId(`day-${PLUS_1}`);
+    const dayFontSizePx = await dayLink
+      .locator("span")
+      .first()
+      .evaluate((el) => parseFloat(getComputedStyle(el).fontSize));
+    expect(dayFontSizePx).toBeGreaterThanOrEqual(18);
   });
 });
