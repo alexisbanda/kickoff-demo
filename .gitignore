@@ -1,3 +1,31 @@
 # Ticket Studio (borradores locales)
 .ticket-studio/
 .agent-playbook/
+
+# dependencias
+/node_modules
+
+# Next.js
+/.next/
+/out/
+next-env.d.ts
+
+# build
+/build
+*.tsbuildinfo
+
+# Prisma Client generado (se regenera con `npm run postinstall` / `prisma generate`)
+/src/generated/
+
+# variables de entorno (.env.example y .env.test sí se versionan)
+.env
+.env.local
+.env.*.local
+
+# varios
+.DS_Store
+*.pem
+npm-debug.log*
+coverage/
+
+/src/generated/prisma
