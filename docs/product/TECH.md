@@ -4,7 +4,7 @@
 
 ## Stack
 
-- **Next.js** (App Router) con **TypeScript** en modo estricto, en Node 20 LTS. Una sola aplicación: páginas renderizadas en servidor y Server Actions o route handlers para escribir.
+- **Next.js** (App Router) con **TypeScript** en modo estricto, en Node 22 LTS. Una sola aplicación: páginas renderizadas en servidor y Server Actions o route handlers para escribir.
 - **PostgreSQL 16**, con **Prisma** como ORM y para las migraciones.
 - Estilos con **Tailwind CSS**: letra grande y legible en el móvil sin zoom (requisito del brief).
 - Gestor de paquetes: **npm** (con `package-lock.json` versionado).

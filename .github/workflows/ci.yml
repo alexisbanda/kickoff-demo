@@ -1,0 +1,55 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: turnos
+          POSTGRES_PASSWORD: turnos
+          POSTGRES_DB: turnos_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U turnos -d turnos_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      # Mismas credenciales que .env.test (locales de Docker/CI, sin secretos reales).
+      DATABASE_URL: postgresql://turnos:turnos@localhost:5432/turnos_test?schema=public
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Instalar Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Aplicar migraciones (base de test)
+        run: npx prisma migrate deploy
+
+      - name: Tests
+        run: npm test
