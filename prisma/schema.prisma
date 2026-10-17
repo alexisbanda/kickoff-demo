@@ -1,0 +1,19 @@
+// Prisma schema del ticket 0 (cimientos).
+// El dominio completo (Reserva, Jugador, Socio, Bloqueo, ...) se añade épica a
+// épica; aquí solo dejamos Prisma configurado con un modelo mínimo.
+// Ver docs/product/TECH.md.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Court {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
