@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { isWithinBookingWindow } from "@/domain/booking-window";
+import { firstDateNonMemberCanBook, isWithinBookingWindow } from "@/domain/booking-window";
 
-// Usamos siempre un `today` fijo a mediodía para comprobar que la hora del
-// día no afecta al cálculo (solo importa el día de calendario).
-const TODAY = new Date(2026, 2, 10, 12, 0, 0); // 10 de marzo de 2026
+const TODAY = "2026-03-10";
 
-function daysFromToday(days: number): Date {
-  return new Date(2026, 2, 10 + days);
+function daysFromToday(days: number): string {
+  const date = new Date(Date.UTC(2026, 2, 10));
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
 }
 
 describe("isWithinBookingWindow", () => {
@@ -58,16 +58,33 @@ describe("isWithinBookingWindow", () => {
       isWithinBookingWindow({ today: TODAY, bookingDate: daysFromToday(-10), isMember: false }),
     ).toBe(false);
   });
+});
 
-  it("ignora la hora del día al comparar: reservar hoy por la noche sigue siendo día 0", () => {
-    const todayAtDawn = new Date(2026, 2, 10, 0, 1, 0);
-    const bookingLateAtNight = new Date(2026, 2, 10, 23, 59, 0);
+describe("firstDateNonMemberCanBook", () => {
+  it("es la fecha objetivo menos 2 días", () => {
+    expect(firstDateNonMemberCanBook("2026-10-20")).toBe("2026-10-18");
+  });
+
+  it("cruza de mes correctamente", () => {
+    expect(firstDateNonMemberCanBook("2026-11-01")).toBe("2026-10-30");
+  });
+
+  it("es consistente con isWithinBookingWindow: justo en esa fecha, un no socio ya puede reservar el día objetivo", () => {
+    const target = "2026-10-20";
+    const firstDate = firstDateNonMemberCanBook(target);
     expect(
-      isWithinBookingWindow({
-        today: todayAtDawn,
-        bookingDate: bookingLateAtNight,
-        isMember: false,
-      }),
+      isWithinBookingWindow({ today: firstDate, bookingDate: target, isMember: false }),
     ).toBe(true);
+  });
+
+  it("es consistente con isWithinBookingWindow: un día antes de esa fecha, un no socio todavía no puede reservar el día objetivo", () => {
+    const target = "2026-10-20";
+    const firstDate = firstDateNonMemberCanBook(target);
+    const dayBefore = new Date(`${firstDate}T00:00:00Z`);
+    dayBefore.setUTCDate(dayBefore.getUTCDate() - 1);
+    const dayBeforeStr = dayBefore.toISOString().slice(0, 10);
+    expect(
+      isWithinBookingWindow({ today: dayBeforeStr, bookingDate: target, isMember: false }),
+    ).toBe(false);
   });
 });
